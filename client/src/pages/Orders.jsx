@@ -117,17 +117,26 @@ function Orders() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">Orders Management</h1>
-        <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
-          {showForm ? 'Cancel' : '+ Create Order'}
+        <h1 className="page-title">🛒 Orders Management</h1>
+        <button className="btn btn-primary" onClick={() => setShowForm(!showForm)} style={{ fontSize: '0.95rem' }}>
+          {showForm ? '✕ Cancel' : '+ Create Order'}
         </button>
       </div>
 
       {showForm && (
-        <div style={{ marginBottom: '2rem', backgroundColor: 'white', padding: '2rem', borderRadius: '8px' }}>
-          <h2>{editingId ? 'Edit Order' : 'Create New Order'}</h2>
+        <div style={{ 
+          marginBottom: '2rem', 
+          backgroundColor: 'white', 
+          padding: '2.5rem', 
+          borderRadius: '12px',
+          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.08)',
+          border: '1px solid rgba(102, 126, 234, 0.1)'
+        }}>
+          <h2 style={{ fontSize: '1.4rem', marginBottom: '1.5rem', color: '#2c3e50', fontWeight: '700' }}>
+            {editingId ? '✏️ Edit Order' : '➕ Create New Order'}
+          </h2>
           <form onSubmit={handleSubmit}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
               <div className="form-group">
                 <label className="form-label">Requirement</label>
                 <select
@@ -180,6 +189,7 @@ function Orders() {
                   name="quantity_ordered"
                   value={formData.quantity_ordered}
                   onChange={handleInputChange}
+                  placeholder="0"
                 />
               </div>
               <div className="form-group">
@@ -220,11 +230,11 @@ function Orders() {
                   value={formData.status}
                   onChange={handleInputChange}
                 >
-                  <option value="pending">Pending</option>
-                  <option value="confirmed">Confirmed</option>
-                  <option value="shipped">Shipped</option>
-                  <option value="delivered">Delivered</option>
-                  <option value="cancelled">Cancelled</option>
+                  <option value="pending">⏳ Pending</option>
+                  <option value="confirmed">✓ Confirmed</option>
+                  <option value="shipped">📦 Shipped</option>
+                  <option value="delivered">✓✓ Delivered</option>
+                  <option value="cancelled">✕ Cancelled</option>
                 </select>
               </div>
               <div className="form-group">
@@ -236,6 +246,7 @@ function Orders() {
                   value={formData.total_amount}
                   onChange={handleInputChange}
                   step="0.01"
+                  placeholder="0.00"
                 />
               </div>
             </div>
@@ -247,30 +258,41 @@ function Orders() {
                 value={formData.notes}
                 onChange={handleInputChange}
                 rows="3"
+                placeholder="Add any additional notes"
+                style={{ resize: 'vertical', minHeight: '100px' }}
               ></textarea>
             </div>
-            <button type="submit" className="btn btn-success">
-              {editingId ? 'Update Order' : 'Create Order'}
-            </button>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button type="submit" className="btn btn-success" style={{ minWidth: '150px' }}>
+                {editingId ? '💾 Update' : '✓ Create'}
+              </button>
+              <button type="button" className="btn" onClick={() => setShowForm(false)} style={{ 
+                backgroundColor: '#95a5a6', 
+                color: 'white',
+                minWidth: '150px'
+              }}>
+                Cancel
+              </button>
+            </div>
           </form>
         </div>
       )}
 
       <div className="table-container">
         {orders.length === 0 ? (
-          <div className="no-data">No orders found. Create one to get started.</div>
+          <div className="no-data">📭 No orders found. Create one to get started.</div>
         ) : (
           <table className="data-table">
             <thead>
               <tr>
-                <th>Material</th>
-                <th>Supplier</th>
-                <th>Quantity</th>
-                <th>Order Date</th>
-                <th>Expected Delivery</th>
-                <th>Status</th>
-                <th>Total Amount</th>
-                <th>Actions</th>
+                <th>📦 Material</th>
+                <th>🏭 Supplier</th>
+                <th>📊 Quantity</th>
+                <th>📅 Order Date</th>
+                <th>🎯 Expected Delivery</th>
+                <th>📍 Status</th>
+                <th>💰 Total Amount</th>
+                <th>⚙️ Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -281,14 +303,30 @@ function Orders() {
                   <td>{order.quantity_ordered}</td>
                   <td>{new Date(order.order_date).toLocaleDateString()}</td>
                   <td>{new Date(order.expected_delivery_date).toLocaleDateString()}</td>
-                  <td><span style={{ textTransform: 'capitalize', fontWeight: 'bold' }}>{order.status}</span></td>
-                  <td>${parseFloat(order.total_amount || 0).toFixed(2)}</td>
                   <td>
-                    <button className="btn btn-primary" onClick={() => handleEdit(order)} style={{ marginRight: '0.5rem' }}>
-                      Edit
+                    <span style={{ 
+                      textTransform: 'capitalize',
+                      padding: '0.4rem 0.8rem',
+                      borderRadius: '6px',
+                      fontSize: '0.85rem',
+                      fontWeight: '600',
+                      backgroundColor: order.status === 'delivered' ? '#dcfce7' : order.status === 'shipped' ? '#dbeafe' : order.status === 'cancelled' ? '#fee2e2' : '#fef3c7',
+                      color: order.status === 'delivered' ? '#166534' : order.status === 'shipped' ? '#0c4a6e' : order.status === 'cancelled' ? '#991b1b' : '#92400e'
+                    }}>
+                      {order.status === 'pending' && '⏳'} 
+                      {order.status === 'confirmed' && '✓'} 
+                      {order.status === 'shipped' && '📦'} 
+                      {order.status === 'delivered' && '✓✓'} 
+                      {order.status === 'cancelled' && '✕'} {order.status}
+                    </span>
+                  </td>
+                  <td><strong>${parseFloat(order.total_amount || 0).toFixed(2)}</strong></td>
+                  <td>
+                    <button className="btn btn-primary" onClick={() => handleEdit(order)} style={{ marginRight: '0.5rem', fontSize: '0.85rem', padding: '0.6rem 1rem' }}>
+                      ✏️ Edit
                     </button>
-                    <button className="btn btn-danger" onClick={() => handleDelete(order.id)}>
-                      Delete
+                    <button className="btn btn-danger" onClick={() => handleDelete(order.id)} style={{ fontSize: '0.85rem', padding: '0.6rem 1rem' }}>
+                      🗑️ Delete
                     </button>
                   </td>
                 </tr>

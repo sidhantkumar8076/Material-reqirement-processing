@@ -92,17 +92,26 @@ function Suppliers() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">Suppliers Management</h1>
-        <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
-          {showForm ? 'Cancel' : '+ Add Supplier'}
+        <h1 className="page-title">🏭 Suppliers Management</h1>
+        <button className="btn btn-primary" onClick={() => setShowForm(!showForm)} style={{ fontSize: '0.95rem' }}>
+          {showForm ? '✕ Cancel' : '+ Add Supplier'}
         </button>
       </div>
 
       {showForm && (
-        <div style={{ marginBottom: '2rem', backgroundColor: 'white', padding: '2rem', borderRadius: '8px' }}>
-          <h2>{editingId ? 'Edit Supplier' : 'Add New Supplier'}</h2>
+        <div style={{ 
+          marginBottom: '2rem', 
+          backgroundColor: 'white', 
+          padding: '2.5rem', 
+          borderRadius: '12px',
+          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.08)',
+          border: '1px solid rgba(102, 126, 234, 0.1)'
+        }}>
+          <h2 style={{ fontSize: '1.4rem', marginBottom: '1.5rem', color: '#2c3e50', fontWeight: '700' }}>
+            {editingId ? '✏️ Edit Supplier' : '➕ Add New Supplier'}
+          </h2>
           <form onSubmit={handleSubmit}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
               <div className="form-group">
                 <label className="form-label">Supplier Name *</label>
                 <input
@@ -112,6 +121,7 @@ function Suppliers() {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
+                  placeholder="Enter supplier name"
                 />
               </div>
               <div className="form-group">
@@ -122,6 +132,7 @@ function Suppliers() {
                   name="contact_person"
                   value={formData.contact_person}
                   onChange={handleInputChange}
+                  placeholder="Enter contact person name"
                 />
               </div>
               <div className="form-group">
@@ -132,6 +143,7 @@ function Suppliers() {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
+                  placeholder="email@example.com"
                 />
               </div>
               <div className="form-group">
@@ -142,6 +154,7 @@ function Suppliers() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
+                  placeholder="+1 (555) 123-4567"
                 />
               </div>
               <div className="form-group">
@@ -152,6 +165,7 @@ function Suppliers() {
                   name="city"
                   value={formData.city}
                   onChange={handleInputChange}
+                  placeholder="Enter city"
                 />
               </div>
               <div className="form-group">
@@ -162,6 +176,7 @@ function Suppliers() {
                   name="state"
                   value={formData.state}
                   onChange={handleInputChange}
+                  placeholder="Enter state"
                 />
               </div>
               <div className="form-group">
@@ -172,6 +187,7 @@ function Suppliers() {
                   name="country"
                   value={formData.country}
                   onChange={handleInputChange}
+                  placeholder="Enter country"
                 />
               </div>
               <div className="form-group">
@@ -182,6 +198,7 @@ function Suppliers() {
                   name="lead_time_days"
                   value={formData.lead_time_days}
                   onChange={handleInputChange}
+                  placeholder="0"
                 />
               </div>
             </div>
@@ -193,29 +210,40 @@ function Suppliers() {
                 value={formData.address}
                 onChange={handleInputChange}
                 rows="2"
+                placeholder="Enter full address"
+                style={{ resize: 'vertical', minHeight: '80px' }}
               ></textarea>
             </div>
-            <button type="submit" className="btn btn-success">
-              {editingId ? 'Update Supplier' : 'Create Supplier'}
-            </button>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button type="submit" className="btn btn-success" style={{ minWidth: '150px' }}>
+                {editingId ? '💾 Update' : '✓ Create'}
+              </button>
+              <button type="button" className="btn" onClick={() => setShowForm(false)} style={{ 
+                backgroundColor: '#95a5a6', 
+                color: 'white',
+                minWidth: '150px'
+              }}>
+                Cancel
+              </button>
+            </div>
           </form>
         </div>
       )}
 
       <div className="table-container">
         {suppliers.length === 0 ? (
-          <div className="no-data">No suppliers found. Create one to get started.</div>
+          <div className="no-data">📭 No suppliers found. Create one to get started.</div>
         ) : (
           <table className="data-table">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Contact Person</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>City</th>
-                <th>Lead Time</th>
-                <th>Actions</th>
+                <th>🏢 Name</th>
+                <th>👤 Contact Person</th>
+                <th>📧 Email</th>
+                <th>📞 Phone</th>
+                <th>🏙️ City</th>
+                <th>⏱️ Lead Time</th>
+                <th>⚙️ Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -223,16 +251,16 @@ function Suppliers() {
                 <tr key={supplier.id}>
                   <td><strong>{supplier.name}</strong></td>
                   <td>{supplier.contact_person || '-'}</td>
-                  <td>{supplier.email || '-'}</td>
-                  <td>{supplier.phone || '-'}</td>
+                  <td><a href={`mailto:${supplier.email}`} style={{ color: '#667eea', textDecoration: 'none' }}>{supplier.email || '-'}</a></td>
+                  <td><a href={`tel:${supplier.phone}`} style={{ color: '#667eea', textDecoration: 'none' }}>{supplier.phone || '-'}</a></td>
                   <td>{supplier.city || '-'}</td>
-                  <td>{supplier.lead_time_days || 0} days</td>
+                  <td><span style={{ padding: '0.4rem 0.8rem', backgroundColor: '#f0f4ff', borderRadius: '6px', fontSize: '0.85rem', fontWeight: '600' }}>{supplier.lead_time_days || 0} days</span></td>
                   <td>
-                    <button className="btn btn-primary" onClick={() => handleEdit(supplier)} style={{ marginRight: '0.5rem' }}>
-                      Edit
+                    <button className="btn btn-primary" onClick={() => handleEdit(supplier)} style={{ marginRight: '0.5rem', fontSize: '0.85rem', padding: '0.6rem 1rem' }}>
+                      ✏️ Edit
                     </button>
-                    <button className="btn btn-danger" onClick={() => handleDelete(supplier.id)}>
-                      Delete
+                    <button className="btn btn-danger" onClick={() => handleDelete(supplier.id)} style={{ fontSize: '0.85rem', padding: '0.6rem 1rem' }}>
+                      🗑️ Delete
                     </button>
                   </td>
                 </tr>

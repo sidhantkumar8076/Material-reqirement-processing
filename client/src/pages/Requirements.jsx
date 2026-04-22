@@ -94,17 +94,26 @@ function Requirements() {
   return (
     <div>
       <div className="page-header">
-        <h1 className="page-title">Requirements Management</h1>
-        <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
-          {showForm ? 'Cancel' : '+ Add Requirement'}
+        <h1 className="page-title">📋 Requirements Management</h1>
+        <button className="btn btn-primary" onClick={() => setShowForm(!showForm)} style={{ fontSize: '0.95rem' }}>
+          {showForm ? '✕ Cancel' : '+ Add Requirement'}
         </button>
       </div>
 
       {showForm && (
-        <div style={{ marginBottom: '2rem', backgroundColor: 'white', padding: '2rem', borderRadius: '8px' }}>
-          <h2>{editingId ? 'Edit Requirement' : 'Add New Requirement'}</h2>
+        <div style={{ 
+          marginBottom: '2rem', 
+          backgroundColor: 'white', 
+          padding: '2.5rem', 
+          borderRadius: '12px',
+          boxShadow: '0 10px 40px rgba(0, 0, 0, 0.08)',
+          border: '1px solid rgba(102, 126, 234, 0.1)'
+        }}>
+          <h2 style={{ fontSize: '1.4rem', marginBottom: '1.5rem', color: '#2c3e50', fontWeight: '700' }}>
+            {editingId ? '✏️ Edit Requirement' : '➕ Add New Requirement'}
+          </h2>
           <form onSubmit={handleSubmit}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
               <div className="form-group">
                 <label className="form-label">Material *</label>
                 <select
@@ -128,6 +137,7 @@ function Requirements() {
                   name="project_name"
                   value={formData.project_name}
                   onChange={handleInputChange}
+                  placeholder="Enter project name"
                 />
               </div>
               <div className="form-group">
@@ -138,6 +148,7 @@ function Requirements() {
                   name="required_quantity"
                   value={formData.required_quantity}
                   onChange={handleInputChange}
+                  placeholder="0"
                 />
               </div>
               <div className="form-group">
@@ -158,9 +169,9 @@ function Requirements() {
                   value={formData.priority}
                   onChange={handleInputChange}
                 >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
+                  <option value="low">🟢 Low</option>
+                  <option value="medium">🟡 Medium</option>
+                  <option value="high">🔴 High</option>
                 </select>
               </div>
               <div className="form-group">
@@ -171,6 +182,7 @@ function Requirements() {
                   name="created_by"
                   value={formData.created_by}
                   onChange={handleInputChange}
+                  placeholder="Your name"
                 />
               </div>
             </div>
@@ -182,29 +194,40 @@ function Requirements() {
                 value={formData.notes}
                 onChange={handleInputChange}
                 rows="3"
+                placeholder="Add any additional notes"
+                style={{ resize: 'vertical', minHeight: '100px' }}
               ></textarea>
             </div>
-            <button type="submit" className="btn btn-success">
-              {editingId ? 'Update Requirement' : 'Create Requirement'}
-            </button>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button type="submit" className="btn btn-success" style={{ minWidth: '150px' }}>
+                {editingId ? '💾 Update' : '✓ Create'}
+              </button>
+              <button type="button" className="btn" onClick={() => setShowForm(false)} style={{ 
+                backgroundColor: '#95a5a6', 
+                color: 'white',
+                minWidth: '150px'
+              }}>
+                Cancel
+              </button>
+            </div>
           </form>
         </div>
       )}
 
       <div className="table-container">
         {requirements.length === 0 ? (
-          <div className="no-data">No requirements found. Create one to get started.</div>
+          <div className="no-data">📭 No requirements found. Create one to get started.</div>
         ) : (
           <table className="data-table">
             <thead>
               <tr>
-                <th>Material</th>
-                <th>Project</th>
-                <th>Quantity</th>
-                <th>Required Date</th>
-                <th>Priority</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th>📦 Material</th>
+                <th>🏗️ Project</th>
+                <th>📊 Quantity</th>
+                <th>📅 Required Date</th>
+                <th>⚡ Priority</th>
+                <th>✓ Status</th>
+                <th>⚙️ Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -214,14 +237,38 @@ function Requirements() {
                   <td>{req.project_name || '-'}</td>
                   <td>{req.required_quantity} {req.unit}</td>
                   <td>{new Date(req.required_date).toLocaleDateString()}</td>
-                  <td><span style={{ textTransform: 'capitalize' }}>{req.priority}</span></td>
-                  <td><span style={{ textTransform: 'capitalize', color: req.status === 'completed' ? 'green' : 'orange' }}>{req.status}</span></td>
                   <td>
-                    <button className="btn btn-primary" onClick={() => handleEdit(req)} style={{ marginRight: '0.5rem' }}>
-                      Edit
+                    <span style={{ 
+                      textTransform: 'capitalize',
+                      padding: '0.4rem 0.8rem',
+                      borderRadius: '6px',
+                      fontSize: '0.85rem',
+                      fontWeight: '600',
+                      backgroundColor: req.priority === 'high' ? '#fee2e2' : req.priority === 'medium' ? '#fef3c7' : '#dcfce7',
+                      color: req.priority === 'high' ? '#991b1b' : req.priority === 'medium' ? '#92400e' : '#166534'
+                    }}>
+                      {req.priority === 'high' ? '🔴' : req.priority === 'medium' ? '🟡' : '🟢'} {req.priority}
+                    </span>
+                  </td>
+                  <td>
+                    <span style={{ 
+                      textTransform: 'capitalize',
+                      padding: '0.4rem 0.8rem',
+                      borderRadius: '6px',
+                      fontSize: '0.85rem',
+                      fontWeight: '600',
+                      backgroundColor: req.status === 'completed' ? '#dcfce7' : '#fef3c7',
+                      color: req.status === 'completed' ? '#166534' : '#92400e'
+                    }}>
+                      {req.status === 'completed' ? '✓' : '⧗'} {req.status}
+                    </span>
+                  </td>
+                  <td>
+                    <button className="btn btn-primary" onClick={() => handleEdit(req)} style={{ marginRight: '0.5rem', fontSize: '0.85rem', padding: '0.6rem 1rem' }}>
+                      ✏️ Edit
                     </button>
-                    <button className="btn btn-danger" onClick={() => handleDelete(req.id)}>
-                      Delete
+                    <button className="btn btn-danger" onClick={() => handleDelete(req.id)} style={{ fontSize: '0.85rem', padding: '0.6rem 1rem' }}>
+                      🗑️ Delete
                     </button>
                   </td>
                 </tr>
